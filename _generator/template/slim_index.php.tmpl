@@ -1,0 +1,30 @@
+<?php
+session_start();
+
+require 'Slim/Slim.php';
+require 'RedBean/rb.php';
+
+PATMODELSINCLUSIONPAT
+
+// Register Slim auto-loader.
+\Slim\Slim::registerAutoloader();
+
+// Set up database connection.
+PATDBCONFIGPAT
+R::freeze(true);
+
+// Initiate Slim.
+$app = new \Slim\Slim();
+
+class ResourceNotFoundException extends Exception {}
+
+// Configurate app
+$app->config(array(
+    'debug' => true
+));
+
+PATSLIMROUTERSPAT
+
+// = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+
+$app->run();

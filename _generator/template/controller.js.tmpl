@@ -1,0 +1,105 @@
+var thisController = angular.module('PATobjectnamePAT', []);
+
+thisController.controller('PATobjectnamePATController', ['$scope', '$http', '$routeParams', '$rootScope', function ($scope, $http, $routeParams, $rootScope) {
+
+	// = = = = = MEDIA VARIABLES
+	var API_URL = $rootScope.apiurl;
+	
+	/* LIST PAGE- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+	
+	$scope.items_perPage = 10;
+	$scope.currentPage = 1;
+	
+	$scope.init = function() {
+		$scope.loadList();
+	}
+	
+	// = = = = = RETRIEVE FIRST BATCH
+	$scope.loadList = function() {
+		$http.get(API_URL+"PATobjectnamePAT/page/"+$scope.currentPage+"/desc").success(function(result) {
+			for(var i=0; i<result.data.length; i++) result.data[i].isCollapse = true;
+			$scope.result_set = result.data;
+			
+			$scope.data_count = result.count;
+		});
+	}
+	
+	$scope.showDetail = function(item) {
+		item.isCollapse = !item.isCollapse;
+	}
+	
+	// = = = = = SEARCH WITH PAGINATION
+	$scope.searchList = function() {
+		
+		if($scope.keyword.length>2){
+
+			$http.get(API_URL+"PATobjectnamePAT/find/"+$scope.currentPage+"/"+$scope.keyword).success(function(result) {
+				for(var i=0; i<result.data.length; i++) result.data[i].isCollapse = true;
+				$scope.result_set = result.data;
+				
+				$scope.data_count = result.count;
+			});
+		
+		}else
+			alert("Harap memasukkan minimal 3 karakter");
+	}
+	
+	// = = = = = PAGINATION CONTROLLER
+	$scope.pageChanged = function() {
+		if($scope.keyword=="" || $scope.keyword==null)
+			$scope.loadList();
+		else
+			$scope.searchList();
+	}
+	
+	
+	/* INPUT PAGE- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+	
+	$scope.insertData = function() {
+		
+		var data = {
+PATinputpairingPAT
+		};
+		
+		$http.post(API_URL+"PATobjectnamePAT/create",data).success(function(result) {
+			alert("Data berhasil ditambahkan.");
+		});
+
+	}
+	
+	/* UPDATE PAGE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+	
+	$scope.loadDetail = function() {
+		$http.get(API_URL+"PATobjectnamePAT/id/"+$routeParams.id).success(function(result) {
+			var item = result[0];
+PATloadpairingPAT
+		});
+	}
+	
+	$scope.updateData = function() {		
+		var edt_data = {
+PATupdatepairingPAT
+			"id" : $routeParams.id,
+		};
+		
+		$http.post(API_URL+"PATobjectnamePAT/update",edt_data).success(function(result) {
+			alert("Data berhasil diubah.");
+		});
+
+	}
+	
+	/* DELETE  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+	
+	$scope.delData = function(item) {
+		if(confirm('Apakah anda yakin hendak menghapus data ini?')){
+			$http.post(API_URL+"PATobjectnamePAT/delete",{"id":item.id}).success(function(result) {
+				$scope.loadList();
+			});
+		}
+	}
+	
+}]);

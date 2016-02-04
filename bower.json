@@ -1,0 +1,34 @@
+{
+  "name": "Imogen",
+  "version": "1.15",
+  "authors": "ari.setyo@gmail.com",
+  "description": "Imogen: Framework Scaffolding menggunakan Slim, RedBeanPHP, AngularJS, dan Bootstrap",
+  "main": "index.html",
+  "keywords": [
+    "scaffolding",
+    "framework",
+    "angular",
+    "bootstrap",
+    "slimphp",
+    "redbean"
+  ],
+  "license": "MIT",
+  "homepage": "arisetyo.com",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+	"angular-bootstrap": "~0.14.3",
+    "angular-route": "~1.4.7",
+    "angular-sanitize": "~1.4.8",
+    "angular": "~1.4.7",
+    "bootstrap": "~3.3.5",
+    "ui-select": "angular-ui-select#~0.13.2",
+    "firebase": "~2.2.2",
+    "fontawesome": "~4.3.0"
+  }
+}

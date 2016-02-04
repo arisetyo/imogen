@@ -1,0 +1,71 @@
+#   IMOGEN
+#   Penjelasan berkas konfigurasi utama
+#
+#	--------------------------------------------------------
+#	
+#	Penjelasan Kolom Tabel
+#
+#	A. FIELD
+#	["nilai pertama", "nilai kedua", "nilai ketiga", ["nilai keempat"]]
+#
+#	1.	a. Nilai pertama adalah keterangan tekstual (ditampilkan di HTML).
+#		b. Nilai kedua adalah nama yang digunakan sebagai nama kolom di tabel MySQL.
+#		c. Nilai ketiga adalah tipe kolom.
+#		d. Nilai keempat sifatnya pilihan.
+#		e. Nilai keempat Hanya digunakan untuk Foreign Key.
+#		f. Format untuk nilai keempat: ["nama tabel asal FK", "kolom dari tabel asal FK untuk ditampilkan di tabel yang berkoresponden"].
+#		
+#	2.	Kode untuk tipe kolom yang dapat digunakan: int, boolean, varchar, text, date, double, timestamp
+#
+#	B.  NODE
+#	["nama node", "bentuk singular", "kolom untuk pencarian"]
+#
+#	1. Berfungsi untuk penjelasan tabel di antarmuka
+#	
+#	2. Nama node ditampilkan sebagai judul di halaman HTML.
+#
+#	3. Bentuk singular untuk kebutuhan data singular tabel.
+#
+#	4. Kolom untuk pencarian digunakan untuk pembuatan SQL pencarian di setiap tabel
+#
+#
+#	--------------------------------------------------------
+#	
+#	Catatan: 
+#	1. 	YAML bersifat sensitif terhadap indentasi.
+#	2. 	Tidak perlu menambahkan Primary Key. Sistem melakukan secara default.
+#
+#
+#	--------------------------------------------------------
+#	
+#	Contoh struktur sebuah tabel/obyek
+#
+#- table : xxxs
+#	- field
+#		- [Xxx, xxx_xx, varchar]
+#		- [Xxx, xxx_xx, FK, [xxxs', xxx_xx] ]
+#		- [Xxx, xxx_xx, text]
+#		- [Xxx, xxx_xx, int]
+#		- [Xxx, xxx_xx, double]
+#		- [Xxx, xxx_xx, timestamp]
+#	- node
+#		- [Xxx, xxx, xxx_xx]
+#
+
+---
+- table : penulis
+	- field
+		- [Nama, penulis_nama, varchar]
+		- [Email, penulis_email, varchar]
+		- [Bio, penulis_bio, text]
+	- node
+		- [Penulis, penulis, penulis_nama]
+
+- table : artikel
+	- field
+		- [Penulis, penulis_id, FK, [penulis, penulis_nama] ]
+		- [Judul, artikel_judul, varchar]
+		- [Isi, artikel_isi, text]
+		- [Tanggal, artikel_tanggal, date]
+	- node
+		- [Artikel, artikel, artikel_judul]

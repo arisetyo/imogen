@@ -1,0 +1,90 @@
+<?php
+
+class ModelPATclassnamePAT {
+	
+	public function CreateOne($input) {
+		$item = R::dispense('PATtablenamePAT');
+PATcreatepairingPAT
+		
+		$id = R::store($item);
+		if($id) 
+			return $id;
+		else
+			return false;
+	}
+	
+	// = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+	
+	public function RetrieveAll() {
+		$items = R::find('PATtablenamePAT');
+		return R::exportAll($items);
+	}
+	
+	public function RetrievePerPage($page, $dir) {
+		$rst = array();
+		$count = R::getAll( "SELECT COUNT(id) AS total FROM PATtablenamePAT" );
+		$rst["count"] = $count[0]["total"];
+		
+		$perpage = 10;
+		
+		$start = ($page-1)*$perpage;
+		$query = "SELECT * FROM PATtablenamePAT ORDER BY id ".$dir." LIMIT ".$start.",".$perpage;
+		$data = R::getAll($query);
+		$rst["data"] = $data;
+
+		return $rst;
+	}
+	
+	public function RetrieveOne($id) {
+		$items = R::findOne('PATtablenamePAT', 'id=?', array($id));
+		if ($items) {
+			return R::exportAll($items);
+		}
+	}
+		
+	public function RetrieveFind($page,$keyword) {
+		$rst = array();
+		$count = R::getAll( 'SELECT COUNT(id) AS total FROM PATtablenamePAT WHERE PATdefaultsearchcolumnPAT LIKE ?', [ '%'.$keyword.'%' ] );
+		$rst["count"] = $count[0]["total"];
+	
+		$perpage = 10;
+		
+		$start = ($page-1)*$perpage;
+		$data = R::getAll( 'SELECT * FROM PATtablenamePAT WHERE PATdefaultsearchcolumnPAT LIKE ? ORDER BY id ASC LIMIT '.$start.','.$perpage, [ '%'.$keyword.'%' ] );
+		$rst["data"] = $data;
+
+		return $rst;
+	}
+
+	// = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+		
+	public function UpdateOne($input) {
+		$id_itemToUpdate = (string)$input->id;
+		
+		$item = R::findOne('PATtablenamePAT', 'id=?', array($id_itemToUpdate));  
+		if($item) {
+PATupdatepairingPAT
+
+			R::store($item);    
+
+			return true;
+		} else
+			return false;
+	}
+	
+	// = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+	
+	public function DeleteOne($id) {
+		$itemToDelete = R::findOne('PATtablenamePAT', 'id=?', array($id));  
+	
+		if($itemToDelete) {
+			R::trash($itemToDelete);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+}
+
+?>

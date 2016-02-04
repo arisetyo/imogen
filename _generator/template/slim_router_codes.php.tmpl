@@ -1,0 +1,81 @@
+// = = PATitemnamePAT = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
+
+// create
+$app->post('/PATitemnamePAT/create', function () use ($app) {
+	try {
+		$request = $app->request();
+		$body = $request->getBody();
+		$input = json_decode($body);
+
+		$m = new ModelPATclassnamePAT();
+		if( $newId = $m->CreateOne($input) )
+			echo "SUCCESS";//$newId;
+		else 
+			throw new ResourceNotFoundException();
+	} catch (Exception $e) {
+		$app->response()->status(400);
+		$app->response()->header('X-Status-Reason', $e->getMessage());
+	}
+});
+
+// retrieve
+$app->get('/PATtablenamePAT', function () use ($app) { 
+	$m = new ModelPATclassnamePAT();
+	$app->response()->header('Content-Type', 'application/json');
+	echo json_encode( $m->RetrieveAll() );
+});
+
+$app->get('/PATtablenamePAT/page/:page/:dir', function ($page,$dir) use ($app) { 
+	$m = new ModelPATclassnamePAT();
+	$app->response()->header('Content-Type', 'application/json');
+	echo json_encode( $m->RetrievePerPage($page,$dir) );
+});
+
+$app->get('/PATitemnamePAT/id/:id', function ($id) use ($app) {
+	$m = new ModelPATclassnamePAT();
+	$app->response()->header('Content-Type', 'application/json');
+	echo json_encode( $m->RetrieveOne($id) );
+});
+
+$app->get('/PATitemnamePAT/find/:page/:keyword', function ($page,$keyword) use ($app) {
+	$sc = new ModelPATclassnamePAT();
+	$app->response()->header('Content-Type', 'application/json');
+	echo json_encode( $sc->RetrieveFind($page,$keyword) );
+});
+
+// update
+$app->post('/PATitemnamePAT/update', function () use ($app) { 
+	try {
+		$request = $app->request();
+		$body = $request->getBody();
+		$input = json_decode($body);
+		
+		$m = new ModelPATclassnamePAT();
+		if( $m->UpdateOne($input) )
+			echo "SUCCESS";
+		else 
+			throw new ResourceNotFoundException();
+	} catch (Exception $e) {
+		$app->response()->status(400);
+		$app->response()->header('X-Status-Reason', $e->getMessage());
+	}
+});
+
+// delete
+$app->post('/PATitemnamePAT/delete', function () use ($app) { 
+	try {
+		$request 	= $app->request();
+		$body 		= $request->getBody();
+		$input 		= json_decode($body);
+		$item_id 	= (string)$input->id;
+	
+		$m = new ModelPATclassnamePAT();
+		if( $m->DeleteOne($item_id) )
+			$app->response()->status(204);
+		else
+			throw new ResourceNotFoundException();
+	} catch (Exception $e) {
+		$app->response()->status(400);
+		$app->response()->header('X-Status-Reason', $e->getMessage());
+	}
+});

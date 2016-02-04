@@ -1,0 +1,32 @@
+var main = angular.module('main', ['ngRoute','ui.bootstrap'PATCLASSINJECTIONPAT]);
+
+// APP CONTROLLER
+main.controller('applevel', ['$scope', '$http', '$rootScope', '$location', function ($scope, $http, $rootScope, $location) {	
+	
+	$scope.title = "PATAPPNAMEPAT";
+	$scope.menu_template = "views/menu.html";
+	$rootScope.apiurl = "PATAPICONFIGPAT";
+
+}]);
+
+// APP CONFIG
+main.config(['$routeProvider', function($routeProvider) {
+	
+	$routeProvider
+		// Default
+		.when('/', {
+			controller:'applevel',
+			templateUrl:'views/home.html'
+		})
+		
+		
+		// Main Views
+PATVIEWROUTESPAT
+		
+
+		// 404
+		.otherwise({
+			redirectTo: '/'
+		});
+
+}]);

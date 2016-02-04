@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Imogen">
+	<meta name="author" content="">
+	
+	<title>IMOGEN - Generator</title>
+	
+	<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>	
+	
+	<link href="../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">  <!-- bootstrap -->
+	<link href="../bower_components/fontawesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+		<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+	<![endif]-->
+	
+	<link href="main.css" rel="stylesheet" type="text/css">
+
+</head>
+<body ng-controller="thisController" ng-init="init()">
+		
+	<!-- START OF CONTENT -->
+	<h3>Persyaratan</h3>
+	<div>
+		<strong>Berkas Konfigurasi Database</strong>				
+		<br/>
+		
+		<div>
+			<span ng-class="dbconfigtest_status == 'SUCCESS' ? 'label label-success' : 'label label-warning'">
+				<i ng-class="dbconfigtest_status == 'SUCCESS' ? 'fa fa-check' : 'fa fa-times'"></i>
+				{{dbconfigtest_result}}
+			</span><br/>
+			
+			<div ng-show="dbconfigtest_status == 'SUCCESS' ? true : false">
+				<span ng-class="dbconnecttest_status == 'SUCCESS' ? 'label label-success' : 'label label-warning'">
+					<i ng-class="dbconnecttest_status == 'SUCCESS' ? 'fa fa-check' : 'fa fa-times'"></i>
+					{{dbconnecttest_result}}
+				</span><br/>
+			</div>
+		</div>
+			
+		<br/>
+		
+		<strong>Berkas Konfigurasi Aplikasi</strong>
+		<br/>
+		
+		<span ng-class="scaffoldconfigtest_status == 'SUCCESS' ? 'label label-success' : 'label label-warning'">
+			<i ng-class="scaffoldconfigtest_status == 'SUCCESS' ? 'fa fa-check' : 'fa fa-times'"></i>
+			{{scaffoldconfigtest_result}}
+		</span><br/>
+		
+		<div ng-show="showappinfo">
+			<span class='label label-info'><i class='fa fa-asterisk'></i>  Nama aplikasi: <strong>{{scaffoldconfiginfo.name}}</strong></span><br/>
+			<span class='label label-info'><i class='fa fa-asterisk'></i>  Jumlah obyek/tabel aplikasi: <strong>{{scaffoldconfiginfo.objectcount}}</strong></span><br/>
+		</div>
+		
+	</div>
+
+	<hr/>
+
+	<h3>Pembangkit Scaffold Aplikasi</h3>
+	<div>
+		<button class="btn btn-lg btn-primary" ng-click="scaffold()"><i class="fa fa-chevron-circle-right"></i> Bangkitkan</button>
+		
+		<br /><br />
+		
+		<p ng-bind-html="scaffoldreport"></p>
+		
+		<div ng-show="isFinished">
+			<a class="btn btn-lg btn-success" href="../"><i class="fa fa-cog fa-spin"></i> Uji coba aplikasi hasil scaffolding.</a>
+			<br/><br/><br/>&nbsp;
+		</div>
+		
+		
+
+	</div>
+	<!-- END OF CONTENT -->
+
+</div>
+</body>
+
+<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="../bower_components/angular/angular.min.js"></script>
+<script type="text/javascript">
+	
+	var thisController = angular.module('app', []).controller('thisController', ['$scope', '$http', '$sce', function ($scope, $http, $sce) {
+	
+		$scope.init = function() {
+			
+			$scope.showappinfo = false;
+			$scope.isFinished = false;
+			
+			$http.get("utils/dbconfigtest.php").success(function(result) {
+				$scope.dbconfigtest_status = result.status;
+				$scope.dbconfigtest_result = result.message;
+			});
+			
+			$http.get("utils/dbconnecttest.php").success(function(result) {
+				$scope.dbconnecttest_status = result.status;
+				$scope.dbconnecttest_result = result.message;
+			});
+			
+			$http.get("utils/scaffoldconfigtest.php").success(function(result) {
+				$scope.scaffoldconfigtest_status = result.status;
+				$scope.scaffoldconfigtest_result = result.message;
+				
+				if(result.status=="SUCCESS") {
+				
+					$http.get("utils/scaffoldconfiginfo.php").success(function(result) {
+						$scope.showappinfo = true;
+					
+						$scope.scaffoldconfiginfo = result;
+					});			
+			
+				}
+			});
+			
+			////////////////////////////////////////////////////////////////
+			
+			$scope.scaffold = function() {
+				var scaffoldreport = "";
+				
+				$http.get("engines/scaffold_backend_generator.php").success(function(result) {
+					scaffoldreport += result;
+
+					$http.get("engines/scaffold_frontend_generator.php").success(function(result) {
+						scaffoldreport += result;
+						
+						$scope.scaffoldreport = $sce.trustAsHtml(scaffoldreport);
+						$scope.isFinished = true;
+					});
+				});				
+			}
+
+			
+		}
+		
+	}]);
+
+</script>
+
+</html>

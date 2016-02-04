@@ -1,0 +1,11 @@
+#   IMOGEN
+#   Penjelasan berkas konfigurasi keterangan aplikasi
+#
+#	--------------------------------------------------------
+#
+# ["nama aplikasi"]
+# Nama aplikasi adalah nama direktori yang digunakan untuk menyimpan berkas-berkas framework Imogen.
+# Sebagai contoh, bila berkas-berkas disimpan di `htdocs/imogen_dev/`, maka nama aplikasi adalah: imogen_dev.
+# 
+
+- [imogen_dev]
