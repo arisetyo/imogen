@@ -90,9 +90,14 @@ for( $i=0; $i < $tablecount; $i++ ) {
 	$fieldcount = count($fields);	//store fields size in each tables
 
 	foreach($fields as $field) {
-		$fieldtext[] = $field[0];	//store fields text (for use in form/report) in each tables
-		$fieldname[] = $field[1];	//store fields names (for use in SQL) in each tables
-		$fieldtype[] = $field[2];	//store fields datatype (for use in SQL) in each tables
+		$fieldtext[] = $field[0];		//store fields text (for use in form/report) in each tables
+		$fieldname[] = $field[1];		//store fields names (for use in SQL) in each tables
+		$fieldtype[] = $field[2];		//store fields datatype (for use in SQL) in each tables
+		
+		if($field[2]=="FK")				//collect FK's array values
+			$fieldisFK[] = $field[3];
+		else
+			$fieldisFK[] = [];
 	}
 
 	//LOOP OVER THE TABLES ADDITIONAL INFO. E.G. NODE NAME (FOR MENU/HEADER), FIND COLUMN
@@ -176,43 +181,198 @@ for( $i=0; $i < $tablecount; $i++ ) {
 	$js_load_pairing = "";
 	$js_update_pairing = "";
 	//2
-	$html_ins_inputcomponents = "";
-	//3
 	$html_list_detail = "";
+	//3
+	$html_ins_inputcomponents = "";
 	//4
 	$html_upd_inputcomponents = "";
+	
+	//SPECIAL TYPE INPUTS
+	$js_forComboInit = "";
+	$js_forLoadInit = "";
+	//
+	$js_forDateInit = "";
+	$js_forDateToday = "";
+	$js_forDateCode = "";
 	
 	//
 	//LOOP OVER THE FIELDS INSIDE EACH OBJECT (TABLES/CLASSES)
 	for( $j=0; $j < $fieldcount; $j++ ) {
-		//1
-		$js_insert_pairing .= "\t\t\t\"$fieldname[$j]\" : ".'$scope'.".ins_$fieldname[$j],\r";
-		$js_load_pairing .= "\t\t\t".'$scope'.".upd_$fieldname[$j] = item.$fieldname[$j];\r";
-		$js_update_pairing .= "\t\t\t\"$fieldname[$j]\" : ".'$scope'.".upd_$fieldname[$j],\r";
-		//2
-		$html_ins_inputcomponents .= "\t\t\t<div class=\"form-group\">\r".
-                					 "\t\t\t\t<label>$fieldtext[$j]</label>\r".
-                					 "\t\t\t\t<input class=\"form-control\" placeholder=\"$fieldtext[$j]\" ng-model=\"ins_$fieldname[$j]\">\r".
-            						 "\t\t\t</div>\r";
-		//3
-		$html_list_detail .= "\t\t\t\t\t\t$fieldtext[$j]: ".'{{item.'."$fieldname[$j]}}<br/>\r";
-		//4
-		$html_upd_inputcomponents .= "\t\t\t<div class=\"form-group\">\r".
-                					 "\t\t\t\t<label>$fieldtext[$j]</label>\r".
-                					 "\t\t\t\t<input class=\"form-control\" placeholder=\"$fieldtext[$j]\" ng-model=\"upd_$fieldname[$j]\">\r".
-            						 "\t\t\t</div>\r";
-	}
+		
+		//CHECK FOR FOREIGN KEYS & GENERATE COMBOBOX
+		if(count($fieldisFK[$j])>0) {
+			$fk_reftable  = $fieldisFK[$j][0];
+			$fk_refcolumn = $fieldisFK[$j][1];
+		}
+		
+		//fieldtypes: text, default
+		switch( $fieldtype[$j] ) {
+			case "text":
+				//1
+				/*HTML untuk menampilkan value sebuah field database di halaman 'list'*/
+				$html_list_detail .= "\t\t\t\t\t\t$fieldtext[$j]: ".'{{item.'."$fieldname[$j]}}<br/>\r";
+		
+				//2
+				$js_insert_pairing .= "\t\t\t\"$fieldname[$j]\" : ".'$scope'.".ins_$fieldname[$j],\r";
+				$js_update_pairing .= "\t\t\t\"$fieldname[$j]\" : ".'$scope'.".upd_$fieldname[$j],\r";
+		
+				/*PAIRING SAAT LOAD VALUE ORIGINAL DI HALAMAN 'Edit'*/
+				$js_load_pairing .= "\t\t\t".'$scope.upd_'."$fieldname[$j] = item.$fieldname[$j];\r";
+				
+				//3 - HTML untuk pembuatan input component di halaman 'entry'
+				$html_ins_inputcomponents .= "\t\t\t<div class=\"form-group\">\r".
+		                					 "\t\t\t\t<label>$fieldtext[$j]</label>\r".
+		                					 "\t\t\t\t<textarea class=\"form-control\" placeholder=\"$fieldtext[$j]\" ng-model=\"ins_$fieldname[$j]\"></textarea>\r".
+		            						 "\t\t\t</div>\r";
+
+				//4 - HTML untuk pembuatan input component di halaman 'edit'
+				$html_upd_inputcomponents .= "\t\t\t<div class=\"form-group\">\r".
+		                					 "\t\t\t\t<label>$fieldtext[$j]</label>\r".
+		                					 "\t\t\t\t<textarea class=\"form-control\" placeholder=\"$fieldtext[$j]\" ng-model=\"upd_$fieldname[$j]\"></textarea>\r".
+		            						 "\t\t\t</div>\r";
+		        //
+				break;
+			case "date":
+				//1
+				/*HTML untuk menampilkan value sebuah field database di halaman 'list'*/
+				$html_list_detail .= "\t\t\t\t\t\t$fieldtext[$j]: ".'{{item.'."$fieldname[$j]}}<br/>\r";
+				
+				//2
+				$js_insert_pairing .= "\t\t\t\"$fieldname[$j]\" : ".'$scope'.".ins_$fieldname[$j],\r";
+				$js_update_pairing .= "\t\t\t\"$fieldname[$j]\" : ".'$scope'.".upd_$fieldname[$j],\r";
+				
+				//TYPE SPECIFIC JS
+				$js_forDateInit .=	"\t\t".'$scope.ins_'."$fieldname[$j] = new Date(year, month, day);\r";
+				$js_forDateToday.=	"\t\t".'$scope.ins_'."$fieldname[$j] = new Date();\r";
+				$js_forDateCode .=	"\t".'$scope.open_date_'."$fieldname[$j]".' = function($event) { $scope.date_'."$fieldname[$j]_isOpened = true };\r".
+									"\t".'$scope.date_'."$fieldname[$j]_isOpened = false;\r";
+				
+				/*PAIRING SAAT LOAD VALUE ORIGINAL DI HALAMAN 'Edit'*/
+				$js_load_pairing .= "\t\t\t".'$scope.upd_'."$fieldname[$j] = new Date(item.$fieldname[$j]);\r";
+				
+				//3 - HTML untuk pembuatan input component di halaman 'entry'
+				$html_ins_inputcomponents .= "\t\t\t<div class=\"form-group\">\r".
+		                					 "\t\t\t\t<label>$fieldtext[$j]</label>\r".
+		                					 "\t\t\t\t\t<div class=\"input-group\">\r".
+											 "\t\t\t\t\t<input type=\"date\" class=\"form-control\" uib-datepicker-popup ng-model=\"ins_$fieldname[$j]\" is-open=\"date_$fieldname[$j]_isOpened\" min-date=\"'2000-01-01'\" max-date=\"'2099-12-31'\" datepicker-options=\"{formatYear: 'yy',startingDay: 1}\" ng-required=\"true\" close-text=\"Tutup\" />\r".
+											 "\t\t\t\t\t<span class=\"input-group-btn\">\r".
+											 "\t\t\t\t\t<button type=\"button\" class=\"btn btn-default\" ng-click=\"open_date_$fieldname[$j](".'$event'.")\"><i class=\"fa fa-calendar\"></i></button>\r".
+											 "\t\t\t\t\t</span>\r".
+											 "\t\t\t\t\t</div>\r".
+		            						 "\t\t\t</div>\r";
+				
+				//4 - HTML untuk pembuatan input component di halaman 'edit'
+				$html_upd_inputcomponents .= "\t\t\t<div class=\"form-group\">\r".
+		                					 "\t\t\t\t<label>$fieldtext[$j]</label>\r".
+		                					 "\t\t\t\t\t<div class=\"input-group\">\r".
+											 "\t\t\t\t\t<input type=\"date\" class=\"form-control\" uib-datepicker-popup ng-model=\"upd_$fieldname[$j]\" is-open=\"date_$fieldname[$j]_isOpened\" min-date=\"'2000-01-01'\" max-date=\"'2099-12-31'\" datepicker-options=\"{formatYear: 'yy',startingDay: 1}\" ng-required=\"true\" close-text=\"Tutup\" />\r".
+											 "\t\t\t\t\t<span class=\"input-group-btn\">\r".
+											 "\t\t\t\t\t<button type=\"button\" class=\"btn btn-default\" ng-click=\"open_date_$fieldname[$j](".'$event'.")\"><i class=\"fa fa-calendar\"></i></button>\r".
+											 "\t\t\t\t\t</span>\r".
+											 "\t\t\t\t\t</div>\r".
+		            						 "\t\t\t</div>\r";
+				
+				//
+				break;
+			case "FK":
+				//1
+				/*HTML untuk menampilkan value sebuah field database di halaman 'list'*/
+				$html_list_detail .= "\t\t\t\t\t\t$fieldtext[$j]: ".'{{item.'."$fk_refcolumn}}<br/>\r";
+				
+				//2
+				$js_insert_pairing .= "\t\t\t\"$fieldname[$j]\" : ".'$scope.selectItem_'."$fk_reftable.selected.id,\r";
+				$js_update_pairing .= "\t\t\t\"$fieldname[$j]\" : ".'$scope.selectItem_'."$fk_reftable.selected.id,\r";
+				
+				//TYPE SPECIFIC JS
+				$js_forComboInit .= "\t".'$scope.selectItem_'.$fk_reftable.'_Array = [];'."\r".
+									"\t".'$scope.selectItem_'.$fk_reftable.' = {};'."\r".
+									"\t".'$scope.loadFK_'.$fk_reftable.' = function() {'."\r".
+									"\t\t".'$http.get(API_URL+"'.$fk_reftable.'").success(function(result) {'."\r".
+									"\t\t\t".'for(var i=0; i<result.length; i++) {'."\r".
+									"\t\t\t\t".'var obj = {};'."\r".
+									"\t\t\t\t".'obj["id"]   = result[i][\'id\'];'."\r".
+									"\t\t\t\t".'obj["name"] = result[i][\''.$fk_refcolumn.'\'];'."\r".
+									"\t\t\t\t".'$scope.selectItem_'.$fk_reftable.'_Array.push(obj);'."\r".
+									"\t\t\t}\r".
+									"\t\t});\r".
+									"\t}\r";
+									
+				/*PAIRING SAAT LOAD VALUE ORIGINAL DI HALAMAN 'Edit'*/
+				$js_load_pairing .= "\t\t\t".'$scope'.".selectItem_$fk_reftable.selected = {'id':item.$fk_reftable"."_id,'name':item.$fk_refcolumn};\r";
+				
+				//3 - HTML untuk pembuatan input component di halaman 'entry'
+				$html_ins_inputcomponents .= "\t\t\t<div class=\"form-group\">\r".
+											 "\t\t\t\t<label>$fieldtext[$j]</label>\r".
+											 "\t\t\t\t<ui-select ng-model=\"selectItem_$fk_reftable.selected\">\r".
+											 "\t\t\t\t\t<ui-select-match>{{".'$select'.".selected.name}}</ui-select-match>\r".
+											 "\t\t\t\t\t<ui-select-choices repeat=\"selectItem_$fk_reftable in (selectItem_".$fk_reftable."_Array | filter: ".'$select'.".search) track by selectItem_$fk_reftable.id\">\r".
+											 "\t\t\t\t\t\t<span ng-bind=\"selectItem_$fk_reftable.name\"></span>\r".
+											 "\t\t\t\t\t</ui-select-choices>\r".
+											 "\t\t\t\t</ui-select>\r".
+											 "\t\t\t</div>\r";
+
+				//4 - HTML untuk pembuatan input component di halaman 'edit'
+				$html_upd_inputcomponents .= "\t\t\t<div class=\"form-group\">\r".
+											 "\t\t\t\t<label>$fieldtext[$j]</label>\r".
+											 "\t\t\t\t<ui-select ng-model=\"selectItem_$fk_reftable.selected\">\r".
+											 "\t\t\t\t\t<ui-select-match>{{".'$select'.".selected.name}}</ui-select-match>\r".
+											 "\t\t\t\t\t<ui-select-choices repeat=\"selectItem_$fk_reftable in (selectItem_".$fk_reftable."_Array | filter: ".'$select'.".search) track by selectItem_$fk_reftable.id\">\r".
+											 "\t\t\t\t\t\t<span ng-bind=\"selectItem_$fk_reftable.name\"></span>\r".
+											 "\t\t\t\t\t</ui-select-choices>\r".
+											 "\t\t\t\t</ui-select>\r".
+											 "\t\t\t</div>\r";
+				
+				$js_forLoadInit .= "\t\t".'$scope.loadFK_'.$fk_reftable."();\r";
+				//
+				break;
+			default:
+				//1
+				/*HTML untuk menampilkan value sebuah field database di halaman 'list'*/
+				$html_list_detail .= "\t\t\t\t\t\t$fieldtext[$j]: ".'{{item.'."$fieldname[$j]}}<br/>\r";
+				
+				//2
+				$js_insert_pairing .= "\t\t\t\"$fieldname[$j]\" : ".'$scope'.".ins_$fieldname[$j],\r";
+				$js_update_pairing .= "\t\t\t\"$fieldname[$j]\" : ".'$scope'.".upd_$fieldname[$j],\r";
+				
+				/*PAIRING SAAT LOAD VALUE ORIGINAL DI HALAMAN 'Edit'*/
+				$js_load_pairing .= "\t\t\t".'$scope.upd_'."$fieldname[$j] = item.$fieldname[$j];\r";
+				
+				//3 - HTML untuk pembuatan input component di halaman 'entry'
+				$html_ins_inputcomponents .= "\t\t\t<div class=\"form-group\">\r".
+		                					 "\t\t\t\t<label>$fieldtext[$j]</label>\r".
+		                					 "\t\t\t\t<input class=\"form-control\" placeholder=\"$fieldtext[$j]\" ng-model=\"ins_$fieldname[$j]\">\r".
+		            						 "\t\t\t</div>\r";
+
+				//4 - HTML untuk pembuatan input component di halaman 'edit'
+				$html_upd_inputcomponents .= "\t\t\t<div class=\"form-group\">\r".
+		                					 "\t\t\t\t<label>$fieldtext[$j]</label>\r".
+		                					 "\t\t\t\t<input class=\"form-control\" placeholder=\"$fieldtext[$j]\" ng-model=\"upd_$fieldname[$j]\">\r".
+		            						 "\t\t\t</div>\r";
+				//
+				break;
+		}
+		
+	}//End of LOOP OVER THE FIELDS INSIDE EACH OBJECT (TABLES/CLASSES)
 	
 	//1
 	$js_controller_content  	= preg_replace('/PATinputpairingPAT/', $js_insert_pairing, $js_controller_content);
 	$js_controller_content  	= preg_replace('/PATloadpairingPAT/', $js_load_pairing, $js_controller_content);
 	$js_controller_content  	= preg_replace('/PATupdatepairingPAT/', $js_update_pairing, $js_controller_content);
+	//
+	$js_controller_content		= preg_replace('/PATjsforComboInitPAT/', $js_forComboInit, $js_controller_content);
+	$js_controller_content		= preg_replace('/PATiniFKsPAT/', $js_forLoadInit, $js_controller_content);
+	//
+	$js_controller_content		= preg_replace('/PATjsforDateInitPAT/', $js_forDateInit, $js_controller_content);
+	$js_controller_content		= preg_replace('/PATjsforDateTodayPAT/', $js_forDateToday, $js_controller_content);
+	$js_controller_content		= preg_replace('/PATjsforDateCodePAT/', $js_forDateCode, $js_controller_content);
+
 	//2
-	$html_ins_content		= preg_replace('/PATinputcomponentsPAT/', $html_ins_inputcomponents, $html_ins_content);
-	//3
 	$html_list_content  	= preg_replace('/PATitemdetailPAT/', $html_list_detail, $html_list_content);
+	//3
+	$html_ins_content		= preg_replace('/PATinputcomponentsPAT/', $html_ins_inputcomponents, $html_ins_content);
 	//4
 	$html_upd_content		= preg_replace('/PATeditcomponentsPAT/', $html_upd_inputcomponents, $html_upd_content);
+	
 	// - - - - - -
 	
 	//1
@@ -243,6 +403,9 @@ for( $i=0; $i < $tablecount; $i++ ) {
 	unset($fieldname);
 	unset($fieldtype);
 	unset($fieldisFK);
+	//
+	unset($fk_reftable);
+	unset($fk_refcolumn);
 	//
 	unset($nodes);
 	unset($nodename);
@@ -277,6 +440,14 @@ for( $i=0; $i < $tablecount; $i++ ) {
 	//
 	unset($html_upd_file);
 	unset($html_upd_content);
+	
+	//OCCASIONAL
+	unset($js_forComboInit);
+	unset($js_forLoadInit);
+	//
+	unset($js_forDateInit);
+	unset($js_forDateToday);
+	unset($js_forDateCode);
 	
 }
 // END OF : LOOP OVER ALL TABLES DEFINED IN YAML FILE. 

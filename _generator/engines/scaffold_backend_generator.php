@@ -123,11 +123,11 @@ for( $i=0; $i < $tablecount; $i++ ) {
 		$fieldtext[] = $field[0];	//store fields text (for use in form/report) in each tables
 		$fieldname[] = $field[1];	//store fields names (for use in SQL) in each tables
 		$fieldtype[] = $field[2];	//store fields datatype (for use in SQL) in each tables
-		/*
-		CURRENTLY NOT USED IN THIS VERSION
-		THIS IS USED IN CREATING AN FK ID SELECT LIST IN THE FORM
-		$fieldisFK[] = $field[3];	//store fields is_FK (for use in SQL/form/report) in each tables
-		*/
+		
+		if($field[2]=="FK")			//collect FK's array values
+			$fieldisFK[] = $field[3];
+		else
+			$fieldisFK[] = [];
 	}
 
 	//LOOP OVER THE TABLES ADDITIONAL INFO. E.G. NODE NAME (FOR MENU/HEADER), FIND COLUMN
@@ -155,17 +155,43 @@ for( $i=0; $i < $tablecount; $i++ ) {
 	//
 	$modelcreatepairing = "";
 	$modelupdatepairing = "";
-	//INSERT FIELDS ARRAY PAIRINGS
+	
+	$foreignkey_sql_COL = "";
+	$foreignkey_sql_TBL = "";
+	$foreignkey_sql_WHEREI = "";
+	$foreignkey_sql_WHEREF = "";
+	
+	//LOOP OVER THE FIELDS INSIDE EACH OBJECT (TABLES/CLASSES)
 	for( $j=0; $j < $fieldcount; $j++ ){
+		//INSERT FIELDS ARRAY PAIRINGS
 		$modelcreatepairing .= "\t\t". 		'$item->'.$fieldname[$j].' = (string)$input->'.$fieldname[$j] .";\r";
 		$modelupdatepairing .= "\t\t\t". 	'$item->'.$fieldname[$j].' = (string)$input->'.$fieldname[$j] .";\r";
+		
+		//CHECK FOR FOREIGN KEYS & GENERATE COMBOBOX
+		if(count($fieldisFK[$j])>0) {
+			$fk_reftable  = $fieldisFK[$j][0];
+			$fk_refcolumn = $fieldisFK[$j][1];
+		
+			//for FOREIGN KEYS
+			$foreignkey_sql_COL   .= ", $fk_reftable.$fk_refcolumn";
+			$foreignkey_sql_TBL   .= ", $fk_reftable";
+			$foreignkey_sql_WHEREI .= "WHERE ".$fk_reftable.".id = ".$objectname.".".$fieldname[$j];
+			$foreignkey_sql_WHEREF .= "AND ".$fk_reftable.".id = ".$objectname.".".$fieldname[$j];
+		}
 	}
 	
+	//WRITE TO PHP MODELS
 	$modelclass_content = preg_replace('/PATcreatepairingPAT/', $modelcreatepairing, $modelclass_content);
 	$modelclass_content = preg_replace('/PATupdatepairingPAT/', $modelupdatepairing, $modelclass_content);
+	
+	$modelclass_content = preg_replace('/PATforeignkeysqlPAT_COL/', $foreignkey_sql_COL, $modelclass_content);
+	$modelclass_content = preg_replace('/PATforeignkeysqlPAT_TBL/', $foreignkey_sql_TBL, $modelclass_content);
+	$modelclass_content = preg_replace('/PATforeignkeysqlPAT_WHEREI/', $foreignkey_sql_WHEREI, $modelclass_content);
+	$modelclass_content = preg_replace('/PATforeignkeysqlPAT_WHEREF/', $foreignkey_sql_WHEREF, $modelclass_content);
 	//
 	$fo->CreateFile($modelclass_content, "Model".ucfirst($objectname).".php", $slimmodel_dir);
 
+	
 	#############################
 	# SLIM APP CONTENT CREATION
 	#############################
@@ -175,8 +201,8 @@ for( $i=0; $i < $tablecount; $i++ ) {
 	$slimrouter_content = $fo->FileContent($slimrouter_file);
 
 	$slimrouter_content = preg_replace('/PATtablenamePAT/', $objectname, 			$slimrouter_content);
-	$slimrouter_content = preg_replace('/PATclassnamePAT/', ucfirst($objectname), $slimrouter_content);
-	$slimrouter_content = preg_replace('/PATitemnamePAT/',  $itemname, 			$slimrouter_content);
+	$slimrouter_content = preg_replace('/PATclassnamePAT/', ucfirst($objectname),	$slimrouter_content);
+	$slimrouter_content = preg_replace('/PATitemnamePAT/',  $itemname,				$slimrouter_content);
 	
 	// COMBINE ALL ROUTERS IN ONE STRING
 	
@@ -205,6 +231,11 @@ for( $i=0; $i < $tablecount; $i++ ) {
 	unset($modelclass_content);
 	unset($modelcreatepairing);
 	unset($modelupdatepairing);
+	//
+	unset($foreignkey_sql_COL);
+	unset($foreignkey_sql_TBL);
+	unset($foreignkey_sql_WHEREI);
+	unset($foreignkey_sql_WHEREF);
 	//
 	unset($slimrouter_file);
 	unset($slimrouter_content);

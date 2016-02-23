@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row" ng-init="init_entry()">
     <div class="col-lg-12">
 
 		<!-- START =================================== -->
@@ -11,7 +11,8 @@ PATinputcomponentsPAT
 		</form>
 		
 		<input type="reset" class="btn btn-warning btn-lg"/>
-		<button class="btn btn-primary btn-lg" ng-click="insertData()"><i class="fa fa-pencil"></i> Simpan</button>
+		<button class="btn btn-primary btn-lg" ng-click="insertData()"><i class="{{i_save_button}}"></i> Simpan</button>
+		<small class="label label-info">{{process_message}}</small>
 		
 		<hr/>
 		

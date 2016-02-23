@@ -28,7 +28,11 @@ PATcreatepairingPAT
 		$perpage = 10;
 		
 		$start = ($page-1)*$perpage;
-		$query = "SELECT * FROM PATtablenamePAT ORDER BY id ".$dir." LIMIT ".$start.",".$perpage;
+		//WITH NO FK
+		//$query = "SELECT PATtablenamePAT.* FROM PATtablenamePAT ORDER BY PATtablenamePAT.id ".$dir." LIMIT ".$start.",".$perpage;
+		//WITH FK
+		$query = "SELECT PATtablenamePAT.* PATforeignkeysqlPAT_COL FROM PATtablenamePAT PATforeignkeysqlPAT_TBL PATforeignkeysqlPAT_WHEREI ORDER BY PATtablenamePAT.id ".$dir." LIMIT ".$start.",".$perpage;		
+
 		$data = R::getAll($query);
 		$rst["data"] = $data;
 
@@ -36,10 +40,18 @@ PATcreatepairingPAT
 	}
 	
 	public function RetrieveOne($id) {
+		//WITH NO FK
+		/*
 		$items = R::findOne('PATtablenamePAT', 'id=?', array($id));
 		if ($items) {
 			return R::exportAll($items);
 		}
+		*/
+		
+		//WITH FK
+		$query = "SELECT PATtablenamePAT.* PATforeignkeysqlPAT_COL FROM PATtablenamePAT PATforeignkeysqlPAT_TBL WHERE PATtablenamePAT.id = $id PATforeignkeysqlPAT_WHEREF";
+		$data = R::getAll($query);
+		return $data;
 	}
 		
 	public function RetrieveFind($page,$keyword) {
@@ -50,7 +62,11 @@ PATcreatepairingPAT
 		$perpage = 10;
 		
 		$start = ($page-1)*$perpage;
-		$data = R::getAll( 'SELECT * FROM PATtablenamePAT WHERE PATdefaultsearchcolumnPAT LIKE ? ORDER BY id ASC LIMIT '.$start.','.$perpage, [ '%'.$keyword.'%' ] );
+		//WITH NO FK
+		//$data = R::getAll( 'SELECT * FROM PATtablenamePAT WHERE PATdefaultsearchcolumnPAT LIKE ? ORDER BY id ASC LIMIT '.$start.','.$perpage, [ '%'.$keyword.'%' ] );
+		//WITH FK
+		$data = R::getAll( 'SELECT PATtablenamePAT.* PATforeignkeysqlPAT_COL FROM PATtablenamePAT PATforeignkeysqlPAT_TBL WHERE PATtablenamePAT.PATdefaultsearchcolumnPAT LIKE ? PATforeignkeysqlPAT_WHEREF ORDER BY PATtablenamePAT.id ASC LIMIT '.$start.','.$perpage, [ '%'.$keyword.'%' ]  );	
+		
 		$rst["data"] = $data;
 
 		return $rst;

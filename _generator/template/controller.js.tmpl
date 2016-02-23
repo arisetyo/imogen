@@ -1,27 +1,62 @@
-var thisController = angular.module('PATobjectnamePAT', []);
+var thisController = angular.module('PATobjectnamePAT', ['ui.select', 'ngSanitize']);
 
 thisController.controller('PATobjectnamePATController', ['$scope', '$http', '$routeParams', '$rootScope', function ($scope, $http, $routeParams, $rootScope) {
 
 	// = = = = = MEDIA VARIABLES
 	var API_URL = $rootScope.apiurl;
+
+	$scope.i_save_button = "fa fa-pencil";
+	$scope.i_reload_button = "fa fa-refresh";
+	$scope.i_search_button = "fa fa-search";
+	$scope.process_message = "";
+
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 	
+PATjsforComboInitPAT
+
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+	$scope.today = function() {
+PATjsforDateTodayPAT
+	};
+	$scope.today();
+		
+	$scope.setDate = function(year, month, day) {
+PATjsforDateInitPAT
+	};
+
+PATjsforDateCodePAT
+
 	/* LIST PAGE- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 	
 	$scope.items_perPage = 10;
 	$scope.currentPage = 1;
 	
-	$scope.init = function() {
+	$scope.init_list = function() {
 		$scope.loadList();
+	}
+	
+	$scope.init_entry = function() {
+PATiniFKsPAT
+	}
+	
+	$scope.init_edit = function() {
+		$scope.loadDetail();
+PATiniFKsPAT
 	}
 	
 	// = = = = = RETRIEVE FIRST BATCH
 	$scope.loadList = function() {
+		$scope.i_reload_button = "fa fa-spinner fa-spin";
+		
 		$http.get(API_URL+"PATobjectnamePAT/page/"+$scope.currentPage+"/desc").success(function(result) {
 			for(var i=0; i<result.data.length; i++) result.data[i].isCollapse = true;
 			$scope.result_set = result.data;
 			
 			$scope.data_count = result.count;
+			
+			$scope.i_reload_button = "fa fa-refresh";
 		});
 	}
 	
@@ -33,12 +68,15 @@ thisController.controller('PATobjectnamePATController', ['$scope', '$http', '$ro
 	$scope.searchList = function() {
 		
 		if($scope.keyword.length>2){
+			$scope.i_search_button = "fa fa-spinner fa-spin";
 
 			$http.get(API_URL+"PATobjectnamePAT/find/"+$scope.currentPage+"/"+$scope.keyword).success(function(result) {
 				for(var i=0; i<result.data.length; i++) result.data[i].isCollapse = true;
 				$scope.result_set = result.data;
 				
 				$scope.data_count = result.count;
+				
+				$scope.i_search_button = "fa fa-search";
 			});
 		
 		}else
@@ -58,13 +96,16 @@ thisController.controller('PATobjectnamePATController', ['$scope', '$http', '$ro
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 	
 	$scope.insertData = function() {
+		$scope.process_message = "";
+		$scope.i_save_button = "fa fa-spinner fa-spin";
 		
 		var data = {
 PATinputpairingPAT
 		};
 		
 		$http.post(API_URL+"PATobjectnamePAT/create",data).success(function(result) {
-			alert("Data berhasil ditambahkan.");
+			$scope.process_message = "Data berhasil ditambahkan.";
+			$scope.i_save_button = "fa fa-pencil";
 		});
 
 	}
@@ -79,14 +120,18 @@ PATloadpairingPAT
 		});
 	}
 	
-	$scope.updateData = function() {		
+	$scope.updateData = function() {
+		$scope.process_message = "";
+		$scope.i_save_button = "fa fa-spinner fa-spin";;
+		
 		var edt_data = {
 PATupdatepairingPAT
 			"id" : $routeParams.id,
 		};
 		
 		$http.post(API_URL+"PATobjectnamePAT/update",edt_data).success(function(result) {
-			alert("Data berhasil diubah.");
+			$scope.process_message = "Data berhasil diubah.";
+			$scope.i_save_button = "fa fa-pencil";
 		});
 
 	}

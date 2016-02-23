@@ -1,4 +1,4 @@
-<div class="row" ng-init="loadDetail()">
+<div class="row" ng-init="init_edit()">
     <div class="col-lg-12">
 
 		<!-- START =================================== -->
@@ -11,7 +11,8 @@ PATeditcomponentsPAT
 		</form>
 		
 		<button class="btn btn-warning btn-lg" ng-click="loadDetail()">Reset</button>
-		<button class="btn btn-primary btn-lg" ng-click="updateData()"><i class="fa fa-pencil"></i> Simpan</button>
+		<button class="btn btn-primary btn-lg" ng-click="updateData()"><i class="{{i_save_button}}"></i> Simpan</button>
+		<small class="label label-info">{{process_message}}</small>
 		
 		<hr/>
 		
