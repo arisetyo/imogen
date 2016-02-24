@@ -5,7 +5,7 @@
         <h1 class="page-header">PATnodenamePAT <small>Daftar</small></h1>
         
         <form class="form-inline">
-     		<input class="form-control" placeholder="Cari: PATmaincolumnPAT" ng-model="keyword">
+     		<input class="form-control" placeholder="Cari: PATfindcolumnnamePAT" ng-model="keyword">
 			<button class="btn btn-primary" ng-click="searchList()"><i class="{{i_search_button}}"></i> Cari</button>
         </form>
         
@@ -14,18 +14,30 @@
 		<table class="table table-striped">
 			<thead>
 				<tr>
-					<th width="10%">No</th>
-					<th>Data</th>
-					<th width="250">Aksi</th>
+					<th width="10%">No<br/>&nbsp;</th>
+					<th>
+						ID
+						<br/>
+						<i style="cursor:pointer" class="fa fa-chevron-up" ng-click="changeSortBy('id')"></i>
+						<i style="cursor:pointer" class="fa fa-chevron-down" ng-click="changeSortBy('-id')"></i>
+					</th>
+					<th>
+						PATfindcolumnnamePAT
+						<br/>
+						<i style="cursor:pointer" class="fa fa-chevron-up" ng-click="changeSortBy('PATfindcolumnnamePAT')"></i>
+						<i style="cursor:pointer" class="fa fa-chevron-down" ng-click="changeSortBy('-PATfindcolumnnamePAT')"></i>
+					</th>
+					<th width="250">Aksi<br/>&nbsp;</th>
 				</tr>
 			</thead>
-			<tbody ng-repeat="item in result_set">
+			<tbody ng-repeat="item in result_set | orderBy: sort_by">
 				<tr>
 					<td>{{ (currentPage-1)*10 + ($index+1) }}</td>
 					<td>
 						ID PATnodenamePAT: {{item.id}}
-						<br/>
-						<strong>{{item.PATmaincolumnPAT}}</strong>
+					</td>
+					<td>
+						{{item.PATfindcolumnnamePAT}}
 					</td>
 					<td>
 						<form class="form-inline">

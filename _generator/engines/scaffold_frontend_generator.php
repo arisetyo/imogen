@@ -102,9 +102,9 @@ for( $i=0; $i < $tablecount; $i++ ) {
 
 	//LOOP OVER THE TABLES ADDITIONAL INFO. E.G. NODE NAME (FOR MENU/HEADER), FIND COLUMN
 	foreach($nodes as $node) {
-		$nodename 	= $node[0];	//store each table names' node name (name to be used in the menus)
-		$itemname	= $node[1]; //singular form of the table name. for API node purposes
-		$findcolumn = $node[2];	//default column to be used on a search
+		$nodename = $node[0]; //store each table names' node name (name to be used in the menus)
+		$itemname = $node[1]; //singular form of the table name.
+		$findname = $node[2]; //default column to be used on a search
 	}
 	
 	///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// /////
@@ -149,8 +149,8 @@ for( $i=0; $i < $tablecount; $i++ ) {
 	$html_list_content 		= $fo->FileContent($html_list_file);
 	
 	$html_list_content  	= preg_replace('/PATnodenamePAT/', $nodename, $html_list_content);
-	$html_list_content  	= preg_replace('/PATmaincolumnPAT/', $findcolumn, $html_list_content);
-	$html_list_content  	= preg_replace('/PATmaincolumnnamePAT/', $nodename, $html_list_content);
+	$html_list_content  	= preg_replace('/PATmaincolumnPAT/', $itemname, $html_list_content);
+	$html_list_content  	= preg_replace('/PATfindcolumnnamePAT/', $findname, $html_list_content);
 	$html_list_content  	= preg_replace('/PATobjectnamePAT/', $objectname, $html_list_content);
 	
 	//3
@@ -395,7 +395,6 @@ for( $i=0; $i < $tablecount; $i++ ) {
 	
 	unset($objectname);
 	unset($itemname);
-	unset($findcolumn);
 	//
 	unset($fields);
 	unset($fieldcount);
@@ -409,7 +408,7 @@ for( $i=0; $i < $tablecount; $i++ ) {
 	//
 	unset($nodes);
 	unset($nodename);
-	unset($findcolumn);
+	unset($findname);
 	
 	//1
 	// = = = = = = = = = = = = 

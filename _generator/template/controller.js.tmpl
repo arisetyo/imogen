@@ -30,6 +30,12 @@ PATjsforDateCodePAT
 	/* LIST PAGE- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 	
+	// sort
+	$scope.sort_by = "id";
+	$scope.changeSortBy = function(col) {
+		$scope.sort_by = col;
+	}
+	
 	$scope.items_perPage = 10;
 	$scope.currentPage = 1;
 	
