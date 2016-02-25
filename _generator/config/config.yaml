@@ -61,9 +61,16 @@
 	- node
 		- [Penulis, penulis, penulis_nama]
 
+- table : kategori
+	- field
+		- [Nama, kategori_nama, varchar]
+	- node
+		- [Kategori, kategori, kategori_nama]
+
 - table : artikel
 	- field
 		- [Penulis, penulis_id, FK, [penulis, penulis_nama] ]
+		- [Kategori, kategori_id, FK, [kategori, kategori_nama] ]
 		- [Judul, artikel_judul, varchar]
 		- [Isi, artikel_isi, text]
 		- [Tanggal, artikel_tanggal, date]
