@@ -158,8 +158,7 @@ for( $i=0; $i < $tablecount; $i++ ) {
 	
 	$foreignkey_sql_COL = "";
 	$foreignkey_sql_TBL = "";
-	$foreignkey_sql_WHEREI = "";
-	$foreignkey_sql_WHEREF = "";
+	$foreignkey_sql_WHERE = "";
 	
 	//LOOP OVER THE FIELDS INSIDE EACH OBJECT (TABLES/CLASSES)
 	for( $j=0; $j < $fieldcount; $j++ ){
@@ -175,8 +174,7 @@ for( $i=0; $i < $tablecount; $i++ ) {
 			//for FOREIGN KEYS
 			$foreignkey_sql_COL   .= ", $fk_reftable.$fk_refcolumn";
 			$foreignkey_sql_TBL   .= ", $fk_reftable";
-			$foreignkey_sql_WHEREI .= "WHERE ".$fk_reftable.".id = ".$objectname.".".$fieldname[$j];
-			$foreignkey_sql_WHEREF .= "AND ".$fk_reftable.".id = ".$objectname.".".$fieldname[$j];
+			$foreignkey_sql_WHERE .= " AND ".$fk_reftable.".id = ".$objectname.".".$fieldname[$j];
 		}
 	}
 	
@@ -186,8 +184,7 @@ for( $i=0; $i < $tablecount; $i++ ) {
 	
 	$modelclass_content = preg_replace('/PATforeignkeysqlPAT_COL/', $foreignkey_sql_COL, $modelclass_content);
 	$modelclass_content = preg_replace('/PATforeignkeysqlPAT_TBL/', $foreignkey_sql_TBL, $modelclass_content);
-	$modelclass_content = preg_replace('/PATforeignkeysqlPAT_WHEREI/', $foreignkey_sql_WHEREI, $modelclass_content);
-	$modelclass_content = preg_replace('/PATforeignkeysqlPAT_WHEREF/', $foreignkey_sql_WHEREF, $modelclass_content);
+	$modelclass_content = preg_replace('/PATforeignkeysqlPAT_WHERE/', $foreignkey_sql_WHERE, $modelclass_content);
 	//
 	$fo->CreateFile($modelclass_content, "Model".ucfirst($objectname).".php", $slimmodel_dir);
 
@@ -234,8 +231,7 @@ for( $i=0; $i < $tablecount; $i++ ) {
 	//
 	unset($foreignkey_sql_COL);
 	unset($foreignkey_sql_TBL);
-	unset($foreignkey_sql_WHEREI);
-	unset($foreignkey_sql_WHEREF);
+	unset($foreignkey_sql_WHERE);
 	//
 	unset($slimrouter_file);
 	unset($slimrouter_content);
