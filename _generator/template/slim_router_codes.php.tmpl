@@ -37,7 +37,7 @@ $app->get('/PATitemnamePAT/id/:id', function ($id) use ($app) {
 	echo json_encode( $m->RetrieveOne($id) );
 });
 
-$app->get('/PATitemnamePAT/find/:page/:keyword', function ($page,$keyword) use ($app) {
+$app->get('/PATtablenamePAT/find/:page/:keyword', function ($page,$keyword) use ($app) {
 	$sc = new ModelPATclassnamePAT();
 	$app->response()->header('Content-Type', 'application/json');
 	echo json_encode( $sc->RetrieveFind($page,$keyword) );

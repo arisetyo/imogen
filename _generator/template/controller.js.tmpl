@@ -109,7 +109,7 @@ PATiniFKsPAT
 PATinputpairingPAT
 		};
 		
-		$http.post(API_URL+"PATobjectnamePAT/create",data).success(function(result) {
+		$http.post(API_URL+"PATitemnamePAT/create",data).success(function(result) {
 			$scope.process_message = "Data berhasil ditambahkan.";
 			$scope.i_save_button = "fa fa-pencil";
 		});
@@ -120,7 +120,7 @@ PATinputpairingPAT
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 	
 	$scope.loadDetail = function() {
-		$http.get(API_URL+"PATobjectnamePAT/id/"+$routeParams.id).success(function(result) {
+		$http.get(API_URL+"PATitemnamePAT/id/"+$routeParams.id).success(function(result) {
 			var item = result[0];
 PATloadpairingPAT
 		});
@@ -135,7 +135,7 @@ PATupdatepairingPAT
 			"id" : $routeParams.id,
 		};
 		
-		$http.post(API_URL+"PATobjectnamePAT/update",edt_data).success(function(result) {
+		$http.post(API_URL+"PATitemnamePAT/update",edt_data).success(function(result) {
 			$scope.process_message = "Data berhasil diubah.";
 			$scope.i_save_button = "fa fa-pencil";
 		});
@@ -147,7 +147,7 @@ PATupdatepairingPAT
 	
 	$scope.delData = function(item) {
 		if(confirm('Apakah anda yakin hendak menghapus data ini?')){
-			$http.post(API_URL+"PATobjectnamePAT/delete",{"id":item.id}).success(function(result) {
+			$http.post(API_URL+"PATitemnamePAT/delete",{"id":item.id}).success(function(result) {
 				$scope.loadList();
 			});
 		}

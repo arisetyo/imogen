@@ -140,6 +140,7 @@ for( $i=0; $i < $tablecount; $i++ ) {
 	$js_controller_content 		= $fo->FileContent($js_controller_file);
 	
 	$js_controller_content  	= preg_replace('/PATobjectnamePAT/', $objectname, $js_controller_content);
+	$js_controller_content  	= preg_replace('/PATitemnamePAT/', $itemname, $js_controller_content);
 	
 	//2
 	#############################
