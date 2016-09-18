@@ -1,6 +1,6 @@
 {
   "name": "Imogen",
-  "version": "1.15",
+  "version": "1.2",
   "authors": "ari.setyo@gmail.com",
   "description": "Imogen: Framework Scaffolding menggunakan Slim, RedBeanPHP, AngularJS, dan Bootstrap",
   "main": "index.html",

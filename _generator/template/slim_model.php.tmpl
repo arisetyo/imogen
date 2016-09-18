@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('PATtimezonePAT');
 
 class ModelPATclassnamePAT {
 	
@@ -79,6 +80,7 @@ PATcreatepairingPAT
 		
 		$item = R::findOne('PATtablenamePAT', 'id=?', array($id_itemToUpdate));  
 		if($item) {
+			$item->created_ts = date("Y-m-d H:i:s");
 PATupdatepairingPAT
 
 			R::store($item);    

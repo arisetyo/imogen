@@ -20,7 +20,8 @@ else die($scaffold->mainConfigErrorMessage);
 
 //APP'S MAIN CONFIG FILE, INCLUDING DATABASE CREDENTIALS
 $appname = $appinfo[0][0];
-printf($scaffold->mainConfigLoadedMessage." ".$appname."<br/>");
+$timezone = $appinfo[1][0];
+printf($scaffold->mainConfigLoadedMessage." ".$appname.". Zona waktu: ".$timezone."<br/>");
 
 #CHECKING YAML CONFIG FILE
 #MOST IMPORTANT FILE IN THE PROCESS: config.yaml
@@ -53,7 +54,7 @@ for($i=0;$i<$tablecount;$i++){
 	mysql_query($drop_existing);
 	
 	$field_list = "";
-	$create_query = "CREATE TABLE IF NOT EXISTS ".DATABASE_NAME.".".$tablename." (id INT(4) NOT NULL AUTO_INCREMENT PRIMARY KEY, ";
+	$create_query = "CREATE TABLE IF NOT EXISTS ".DATABASE_NAME.".".$tablename." (id INT(4) NOT NULL AUTO_INCREMENT PRIMARY KEY, `created_ts` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, ";
 	for($j=0;$j<$fieldcount;$j++){
 		switch($fieldtype[$j]){
 			case "FK": $realfieldtype = "INT(8)"; break;
@@ -146,6 +147,8 @@ for( $i=0; $i < $tablecount; $i++ ) {
 	$modelclass_content = preg_replace('/PATclassnamePAT/',	ucfirst($objectname),	$modelclass_content);
 	$modelclass_content = preg_replace('/PATtablenamePAT/',	$objectname, 			$modelclass_content);
 	$modelclass_content = preg_replace('/PATdefaultsearchcolumnPAT/', $findcolumn,	$modelclass_content);
+	$modelclass_content = preg_replace('/PATtimezonePAT/', $timezone,	$modelclass_content);
+	
 	/*
 	CURRENTLY NOT USED IN THIS VERSION
 	THIS IS USED IN CREATING AN FK ID SELECT LIST IN THE FORM

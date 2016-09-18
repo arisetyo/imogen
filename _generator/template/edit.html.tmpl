@@ -1,25 +1,23 @@
-<div class="row" ng-init="init_edit()">
-    <div class="col-lg-12">
+<h1 class="page-header">PATnodenamePAT <small>Ubah Data</small></h1>
 
-		<!-- START =================================== -->
-        <h1 class="page-header">PATnodenamePAT <small>Ubah Data</small></h1>
-        	
-		<form role="form">
-			
+<div class="row" ng-init="init_edit()">
+
+    <div class="col-lg-6">
+			<form role="form">			
 PATeditcomponentsPAT
-			
-		</form>
+			</form>
 		
-		<button class="btn btn-warning btn-lg" ng-click="loadDetail()">Reset</button>
-		<button class="btn btn-primary btn-lg" ng-click="updateData()"><i class="{{i_save_button}}"></i> Simpan</button>
-		<small class="label label-info">{{process_message}}</small>
-		
-		<hr/>
-		
-		<a href="#/PATobjectnamePAT" class="btn btn-default"><i class="fa fa-list"></i> Daftar</a>
-		
-		<br/><br/>&nbsp;
-        <!-- END =================================== -->
-        
+			<button class="btn btn-warning btn-lg" ng-click="loadDetail()">Reset</button>
+			<button class="btn btn-primary btn-lg" ng-click="updateData()"><i class="{{i_save_button}}"></i> Simpan</button>
+			<small class="label label-info">{{process_message}}</small>
     </div>
+
+    <div class="col-lg-6">
+    	&nbsp;
+    </div>
+
 </div>
+
+<hr/>
+<a href="#/PATobjectnamePAT" class="btn btn-default"><i class="fa fa-list"></i> Daftar</a>
+<br/><br/>&nbsp;

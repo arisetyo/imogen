@@ -43,6 +43,7 @@ $jscontrol_dir		= "../../controllers/";
 $htmlmain_dir		= "../../";
 
 // = = = = = = = = = = = = = = = = = =
+/*
 // MAIN APP FILE
 $appclass_file 		= $fo->OpenFile('../template/','app.js.tmpl','r');
 $appclass_content 	= $fo->FileContent($appclass_file);
@@ -61,7 +62,14 @@ $appindex_content  	= preg_replace('/PATAPPNAMEPAT/', $appname, $appindex_conten
 // MENU.HTML
 $html_menu_file 	= $fo->OpenFile('../template/','menu.html.tmpl','r');
 $html_menu_content 	= $fo->FileContent($html_menu_file);
-	
+*/
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// MAIN FILE
+$main_file 		= $fo->OpenFile('../template/','ng_standalone.html.tmpl','r');
+$main_content 	= $fo->FileContent($main_file);
+
+
 #################################
 # CLASS AND COMPONENTS CREATION
 #################################
@@ -126,7 +134,7 @@ for( $i=0; $i < $tablecount; $i++ ) {
 	//index.html
 	$html_controllerfiles .= "\t<script src=\"controllers/$objectname.js\"></script>\r";
 	//menu.html
-	$html_menulinks .= "<li><a href=\"#/$objectname\"><i class=\"fa fa-asterisk\"></i> $nodename</a></li>\r";
+	$html_menulinks .= "<li><a class=\"menu-color\" href=\"#/$objectname\"><i class=\"fa fa-asterisk\"></i> $nodename</a></li>";
 	
 	// = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 	// = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
