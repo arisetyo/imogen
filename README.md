@@ -15,3 +15,7 @@ Cara penggunaan:
 - Mengubah halaman entry dan edit menjadi dua kolom
 - Kolom default "created_ts"
 - Konfigurasi timezone di app.yaml
+
+1.2.1
+- memindahkan home.html ke direktori template
+- memindahkan aplikasi ke direktori _app_ (termasuk direktori `controllers` & `views` scaffold)

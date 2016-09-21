@@ -38,9 +38,9 @@ $fo = new Fileoperation();
 // = = = = = = = = = = = = = = = = = =
 
 //DEFINE LOCATIONS TO PUT GENERATED FILES
-$htmlview_dir		= "../../views/";
-$jscontrol_dir		= "../../controllers/";
-$htmlmain_dir		= "../../";
+$htmlview_dir		= "../../app/views/";
+$jscontrol_dir		= "../../app/controllers/";
+$htmlmain_dir		= "../../app/";
 
 // = = = = = = = = = = = = = = = = = =
 // MAIN APP FILE
@@ -458,6 +458,14 @@ $html_menu_content  = preg_replace('/PATMENULINKSPAT/', $html_menulinks, $html_m
 
 $fo->CreateFile($html_menu_content, "menu.html", $htmlview_dir);
 printf("<strong>Berkas HTML untuk menu navigasi selesai.</strong><br/>");
+
+// = = = = = = = = = = = = = = = = =
+//HOME.HTML
+$html_home_file 	 = $fo->OpenFile('../template/','home.html.tmpl','r');
+$html_home_content = $fo->FileContent($html_home_file);
+
+$fo->CreateFile($html_home_content, "home.html", $htmlview_dir);
+printf("<strong>Berkas HTML untuk halaman beranda selesai.</strong><br/>");
 
 // = = = = = = = = = = = = = = = = =
 
