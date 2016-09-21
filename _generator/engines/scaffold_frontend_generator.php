@@ -38,9 +38,15 @@ $fo = new Fileoperation();
 // = = = = = = = = = = = = = = = = = =
 
 //DEFINE LOCATIONS TO PUT GENERATED FILES
-$htmlview_dir		= "../../app/views/";
-$jscontrol_dir		= "../../app/controllers/";
 $htmlmain_dir		= "../../app/";
+$htmlview_dir		= "../../app/views/";
+$jscontrol_dir	= "../../app/controllers/";
+$jsservice_dir	= "../../app/services/";
+
+if( !file_exists ($htmlmain_dir) )  mkdir($htmlmain_dir, 0755);
+if( !file_exists ($htmlview_dir) )  mkdir($htmlview_dir, 0755);
+if( !file_exists ($jscontrol_dir) ) mkdir($jscontrol_dir, 0755);
+if( !file_exists ($jsservice_dir) ) mkdir($jsservice_dir, 0755);
 
 // = = = = = = = = = = = = = = = = = =
 // MAIN APP FILE
@@ -466,7 +472,6 @@ $html_home_content = $fo->FileContent($html_home_file);
 
 $fo->CreateFile($html_home_content, "home.html", $htmlview_dir);
 printf("<strong>Berkas HTML untuk halaman beranda selesai.</strong><br/>");
-
 // = = = = = = = = = = = = = = = = =
 
 //MAIN APP app.js CONTENT REPLACEMENT
