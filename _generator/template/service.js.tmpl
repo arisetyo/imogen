@@ -1,0 +1,55 @@
+var thisService = angular.module('PATobjectnamePATService', []);
+
+thisService.service('PATclassnamePATSrv', function ($http, $rootScope) {
+    
+    var API_URL = $rootScope.apiurl,
+        model   = "PATobjectnamePAT";
+
+
+    //CREATE
+    this.createItem = function(item){
+        return $http.post(API_URL+model+"/create",item).success(function(result) {
+            return result;
+        });
+    }
+
+    //RETRIEVE
+    this.retrieveDefaultList = function(page){
+        return $http.get(API_URL+model+"/page/"+page+"/desc").success(function(result) {
+            return result;
+        });
+    }
+
+    this.retrieveSearchResultList = function(page, keyword){
+        return $http.get(API_URL+model+"/find/"+page+"/"+keyword).success(function(result) {
+            return result;
+        });
+    }
+
+    this.retrieveItem = function(id){
+        return $http.get(API_URL+model+"/id/"+id).success(function(result) {
+            return result;
+        });
+    }
+
+    this.retrieveAll = function(){
+        return $http.get(API_URL+model).success(function(result) {
+            return result;
+        });
+    }
+
+    //UPDATE
+    this.updateItem = function(item){
+        return $http.post(API_URL+model+"/update",item).success(function(result) {
+            return result;
+        });
+    }
+
+    //DELETE
+    this.deleteItem = function(id){
+        return $http.post(API_URL+model+"/delete",{"id":id}).success(function(result) {
+            return result;
+        });
+    }
+
+});

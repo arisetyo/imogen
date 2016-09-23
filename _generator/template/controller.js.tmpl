@@ -1,10 +1,8 @@
-var thisController = angular.module('PATobjectnamePAT', ['ui.select', 'ngSanitize']);
+var thisController = angular.module('PATobjectnamePAT', ['ui.select', 'ngSanitize','PATobjectnamePATService' PATinjectmodulePAT]);
 
-thisController.controller('PATobjectnamePATController', ['$scope', '$http', '$routeParams', '$rootScope', function ($scope, $http, $routeParams, $rootScope) {
+thisController.controller('PATobjectnamePATController', ['$scope', '$http', '$routeParams', '$rootScope', 'PATclassnamePATSrv'PATinjectclassPAT, function ($scope, $http, $routeParams, $rootScope, PATclassnamePATSrv PATinjectobjectPAT) {
 
 	// = = = = = MEDIA VARIABLES
-	var API_URL = $rootScope.apiurl;
-
 	$scope.i_save_button = "fa fa-pencil";
 	$scope.i_reload_button = "fa fa-refresh";
 	$scope.i_search_button = "fa fa-search";
@@ -56,14 +54,16 @@ PATiniFKsPAT
 	$scope.loadList = function() {
 		$scope.i_reload_button = "fa fa-spinner fa-spin";
 		
-		$http.get(API_URL+"PATobjectnamePAT/page/"+$scope.currentPage+"/desc").success(function(result) {
-			for(var i=0; i<result.data.length; i++) result.data[i].isCollapse = true;
-			$scope.result_set = result.data;
-			
-			$scope.data_count = result.count;
+		var rst = PATclassnamePATSrv.retrieveDefaultList($scope.currentPage);
+    rst.then(function(req) {
+    	var tmp = req.data;
+    	for(var i=0; i<tmp.data.length; i++) tmp.data[i].isCollapse = true;
+      
+      $scope.result_set = tmp.data;
+			$scope.data_count = tmp.count;
 			
 			$scope.i_reload_button = "fa fa-refresh";
-		});
+    });
 	}
 	
 	$scope.showDetail = function(item) {
@@ -76,14 +76,16 @@ PATiniFKsPAT
 		if($scope.keyword.length>2){
 			$scope.i_search_button = "fa fa-spinner fa-spin";
 
-			$http.get(API_URL+"PATobjectnamePAT/find/"+$scope.currentPage+"/"+$scope.keyword).success(function(result) {
-				for(var i=0; i<result.data.length; i++) result.data[i].isCollapse = true;
-				$scope.result_set = result.data;
-				
-				$scope.data_count = result.count;
+			var rst = PATclassnamePATSrv.retrieveSearchResultList($scope.currentPage,$scope.keyword);
+	    rst.then(function(req) {
+	    	var tmp = req.data;
+	    	for(var i=0; i<tmp.data.length; i++) tmp.data[i].isCollapse = true;
+	      
+	      $scope.result_set = tmp.data;
+				$scope.data_count = tmp.count;
 				
 				$scope.i_search_button = "fa fa-search";
-			});
+	    });
 		
 		}else
 			alert("Harap memasukkan minimal 3 karakter");
@@ -104,42 +106,40 @@ PATiniFKsPAT
 	$scope.insertData = function() {
 		$scope.process_message = "";
 		$scope.i_save_button = "fa fa-spinner fa-spin";
-		
-		var data = {
-PATinputpairingPAT
-		};
-		
-		$http.post(API_URL+"PATitemnamePAT/create",data).success(function(result) {
-			$scope.process_message = "Data berhasil ditambahkan.";
-			$scope.i_save_button = "fa fa-pencil";
-		});
 
+PATinputpairingPAT
+
+		var rst = PATclassnamePATSrv.createItem($scope.new_item);
+    rst.then(function(req) {
+    	$scope.process_message = "Data berhasil ditambahkan.";
+			$scope.i_save_button = "fa fa-pencil";
+    });
 	}
 	
 	/* UPDATE PAGE - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 	
 	$scope.loadDetail = function() {
-		$http.get(API_URL+"PATitemnamePAT/id/"+$routeParams.id).success(function(result) {
-			var item = result[0];
+		var rst = PATclassnamePATSrv.retrieveItem($routeParams.id);
+    rst.then(function(req) {
+    	var item = req.data[0];
+    	$scope.loaded_item = item;
+
 PATloadpairingPAT
-		});
+    });	
 	}
 	
 	$scope.updateData = function() {
 		$scope.process_message = "";
 		$scope.i_save_button = "fa fa-spinner fa-spin";;
 		
-		var edt_data = {
 PATupdatepairingPAT
-			"id" : $routeParams.id,
-		};
-		
-		$http.post(API_URL+"PATitemnamePAT/update",edt_data).success(function(result) {
-			$scope.process_message = "Data berhasil diubah.";
-			$scope.i_save_button = "fa fa-pencil";
-		});
 
+		var rst = PATclassnamePATSrv.updateItem($scope.loaded_item);
+    rst.then(function(req) {
+    	$scope.process_message = "Data berhasil diubah.";
+			$scope.i_save_button = "fa fa-pencil";
+    });
 	}
 	
 	/* DELETE  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -147,9 +147,8 @@ PATupdatepairingPAT
 	
 	$scope.delData = function(item) {
 		if(confirm('Apakah anda yakin hendak menghapus data ini?')){
-			$http.post(API_URL+"PATitemnamePAT/delete",{"id":item.id}).success(function(result) {
-				$scope.loadList();
-			});
+			var rst = PATclassnamePATSrv.deleteItem(item.id);
+	    rst.then(function(req) { $scope.loadList() });
 		}
 	}
 	

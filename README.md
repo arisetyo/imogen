@@ -19,3 +19,8 @@ Cara penggunaan:
 1.2.1
 - memindahkan home.html ke direktori template
 - memindahkan aplikasi ke direktori _app_ (termasuk direktori `controllers` & `views` scaffold)
+
+1.2.2
+- menggunakan Angular Service untuk panggilan-panggilan http
+- memindahkan fungsi http dari Controller ke Service
+- penyederhanaan penulisan model data di form entry/edit
